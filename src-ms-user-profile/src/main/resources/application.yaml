@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: src-ms-user-profile
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/db_userprofile}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        jdbc:
+          lab:
+            non_contextual_creation: true
+  topic:
+    name:
+      userprofile: ${KAFKA_PORTOUT_TOPIC:createduser.notification}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+
+server:
+  port: 8081
+  servlet:
+    application-display-name: User Profile Service
+    context-path: /user-profile

@@ -1,0 +1,56 @@
+server:
+  port: 8082
+  servlet:
+    application-display-name: Mail Service
+    context-path: /email
+
+spring:
+  application:
+    name: ms-email
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/db_email}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GOOGLE_MAIL_USERNAME}
+    password: ${GOOGLE_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth:
+          from: ${ALIAS_EMAIL}
+          starttls:
+            enable: true
+
+  rabbitmq:
+    queue: ${RABBIT_QUEUE_NAME:ms.email}
+    username: ${RABBIT_SERVER_USERNAME:guest}
+    password: ${RABBIT_SERVER_PASSWORD:guest}
+    host: ${RABBIT_SERVER_HOST:rabbitmq}
+
+  kafka:
+#    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    topic:
+      name:
+        userprofile: ${KAFKA_TOPIC_NAME:createduser.notification}
+    consumer:
+      enable-auto-commit: false
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:ms-email-group}
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    listener:
+      ack-mode: manual_immediate
+      concurrency: 3
+      poll-timeout: 10000
+      ack-count: 1
+
